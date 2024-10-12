@@ -4,15 +4,19 @@ import com.haibazo.model.Product;
 import com.haibazo.model.Review;
 import com.haibazo.model.User;
 import com.haibazo.repository.ReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ReviewService {
-    @Autowired
+
     private ReviewRepository reviewRepository;
 
     public List<Review> getAllReviews() {

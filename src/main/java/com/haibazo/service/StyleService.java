@@ -2,16 +2,20 @@ package com.haibazo.service;
 
 import com.haibazo.model.Style;
 import com.haibazo.repository.StyleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StyleService {
-    @Autowired
-    private StyleRepository styleRepository;
+
+    StyleRepository styleRepository;
 
     public List<Style> getAllStyles() {
         return styleRepository.findAll();

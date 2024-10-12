@@ -1,64 +1,67 @@
 package com.haibazo.controller;
 
+import com.haibazo.dto.request.UserCreateRequest;
+import com.haibazo.dto.request.UserUpdateRequest;
+import com.haibazo.dto.response.ApiResponse;
+import com.haibazo.dto.response.UserResponse;
+import com.haibazo.mapper.IUserMapper;
 import com.haibazo.model.User;
 import com.haibazo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-    @Autowired
-    private UserService userService;
+    UserService userService;
+    IUserMapper userMapper;
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ApiResponse<List<UserResponse>> getAllUsers() {
+        List<UserResponse> userResponses = userService.getAllUsers();
+        return ApiResponse.<List<UserResponse>>builder().code(200).result(userResponses).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
-        Optional<User> user = userService.getUserById(userId);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ApiResponse<UserResponse> getUserById(@PathVariable(value = "id") Integer userId) {
+        User user = userService.getUserById(userId);
+        return ApiResponse.<UserResponse>builder().code(200).result(userMapper.toUserResponse(user)).build();
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
-        Optional<User> user = userService.getUserByEmail(email);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ApiResponse<UserResponse> getUserByEmail(@PathVariable(value = "email") String email) {
+        User user = userService.getUserByEmail(email);
+        return ApiResponse.<UserResponse>builder().code(200).result(userMapper.toUserResponse(user)).build();
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
-        Optional<User> user = userService.getUserByUsername(username);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ApiResponse<UserResponse> getUserByUsername(@PathVariable(value = "username") String username) {
+        User user = userService.getUserByUsername(username);
+        return ApiResponse.<UserResponse>builder().code(200).result(userMapper.toUserResponse(user)).build();
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.saveUser(user);
+    public ApiResponse<UserResponse> createUser(@RequestBody UserCreateRequest userCreateRequest) {
+        UserResponse userResponse = userService.saveUser(userCreateRequest);
+        return ApiResponse.<UserResponse>builder().code(200).result(userResponse).build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer userId, @RequestBody User userDetails) {
-        Optional<User> user = userService.getUserById(userId);
-        if (user.isPresent()) {
-            userDetails.setUserId(userId);
-            return ResponseEntity.ok(userService.saveUser(userDetails));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("update/{id}")
+    public ApiResponse<UserResponse> updateUser(@PathVariable(value = "id") Integer userId,
+                                                @RequestBody UserUpdateRequest userDetails) {
+        UserResponse userResponse = userService.updateUser(userId, userDetails);
+        return ApiResponse.<UserResponse>builder().code(200).result(userResponse).build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer userId) {
+    @DeleteMapping("delete/{id}")
+    public ApiResponse<String> deleteUser(@PathVariable(value = "id") Integer userId) {
         userService.deleteUser(userId);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.<String>builder().code(200).result("Delete User Successful").build();
     }
 }

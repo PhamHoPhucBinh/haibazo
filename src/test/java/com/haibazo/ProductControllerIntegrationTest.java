@@ -1,5 +1,7 @@
 package com.haibazo;
 
+import com.haibazo.enums.Color;
+import com.haibazo.enums.Size;
 import com.haibazo.model.Product;
 import com.haibazo.model.Category;
 import com.haibazo.model.Style;
@@ -54,8 +56,8 @@ public class ProductControllerIntegrationTest {
         product.setProductName("T-Shirt");
         product.setOriginalPrice(20.0);
         product.setDiscountPrice(15.0);
-        product.setColor(Product.Color.GREEN);
-        product.setSize(Product.Size.M);
+        product.setColor(Color.GREEN);
+        product.setSize(Size.M);
         product.setCategory(category); // Set category (bidirectional relationship)
         product.setStyle(style); // Set style
 

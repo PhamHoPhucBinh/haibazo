@@ -1,8 +1,7 @@
 package com.haibazo.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
 import java.util.List;
@@ -11,6 +10,9 @@ import java.util.List;
 @Table(name = "user")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -26,15 +28,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
-
-    public User() {
-    }
-
-    public User(Integer userId, String username, String email, String password, List<Review> reviews) {
-        this.userId = userId;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.reviews = reviews;
-    }
 }
