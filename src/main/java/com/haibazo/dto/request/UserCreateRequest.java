@@ -16,5 +16,4 @@ public class UserCreateRequest {
     String username;
     String email;
     String password;
-    List<Integer> reviews;
 }

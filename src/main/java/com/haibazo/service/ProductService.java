@@ -11,8 +11,9 @@ import com.haibazo.mapper.ProductMapper;
 import com.haibazo.model.Category;
 import com.haibazo.model.Product;
 import com.haibazo.model.Style;
+import com.haibazo.repository.CategoryRepository;
 import com.haibazo.repository.ProductRepository;
-import com.haibazo.repository.ReviewRepository;
+import com.haibazo.repository.StyleRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,7 +28,8 @@ import java.util.List;
 public class ProductService {
     ProductRepository productRepository;
     ProductMapper productMapper;
-    ReviewRepository reviewRepository;
+    StyleRepository styleRepository;
+    CategoryRepository categoryRepository;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -40,16 +42,16 @@ public class ProductService {
     public ProductResponse updateProduct(Integer productId, ProductUpdateRequest request) {
         Product product = this.getProductById(productId);
         productMapper.update(product, request);
-        var reviews = reviewRepository.findAllById(request.getReviews());
-        product.setReviews(reviews);
         product = productRepository.save(product);
         return productMapper.toProductResponse(product);
     }
 
     public ProductResponse saveProduct(ProductCreateRequest productCreateRequest) {
         Product product = productMapper.toProduct(productCreateRequest);
-        var reviews = reviewRepository.findAllById(productCreateRequest.getReviews());
-        product.setReviews(reviews);
+        Style style = styleRepository.findById(productCreateRequest.getStyle()).orElse(null);
+        Category category = categoryRepository.findById(productCreateRequest.getCategory()).orElse(null);
+        product.setStyle(style);
+        product.setCategory(category);
         try {
             product = productRepository.save(product);
         } catch (DataIntegrityViolationException e) {

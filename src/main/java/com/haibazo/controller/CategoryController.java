@@ -36,7 +36,7 @@ public class CategoryController {
         return ApiResponse.<Optional<CategoryResponse>>builder().code(404).message("Category Is Not Found").build();
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<CategoryResponse> createCategory(@RequestBody CategoryCreateRequest categoryCreateRequest) {
         CategoryResponse categoryResponse = categoryService.saveCategory(categoryCreateRequest);
         return ApiResponse.<CategoryResponse>builder().code(200).result(categoryResponse).build();

@@ -13,7 +13,8 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND(2001, "Product Not Found", HttpStatus.NOT_FOUND),
     PRODUCT_EXIST(2002, "Product Exist", HttpStatus.NOT_FOUND),
     USER_NOT_FOUND(3001, "User Not Found", HttpStatus.NOT_FOUND),
-    USER_EXIST(3002, "User Exist", HttpStatus.NOT_FOUND);
+    USER_EXIST(3002, "User Exist", HttpStatus.NOT_FOUND),
+    REVIEW_NOT_FOUND(4001, "Review Is Not Found", HttpStatus.NOT_FOUND);
     private final int code;
     private final String message;
     private final HttpStatusCode httpStatusCode;

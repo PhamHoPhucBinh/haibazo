@@ -75,7 +75,7 @@ public class ProductController {
         return ApiResponse.<Product>builder().code(200).result(product).build();
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<ProductResponse> createProduct(@RequestBody ProductCreateRequest product) {
         ProductResponse productResponse = productService.saveProduct(product);
         return ApiResponse.<ProductResponse>builder().code(200).result(productResponse).build();

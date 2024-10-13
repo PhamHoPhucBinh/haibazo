@@ -22,7 +22,7 @@ public class UserController {
     UserService userService;
     IUserMapper userMapper;
 
-    @GetMapping
+    @GetMapping("/list")
     public ApiResponse<List<UserResponse>> getAllUsers() {
         List<UserResponse> userResponses = userService.getAllUsers();
         return ApiResponse.<List<UserResponse>>builder().code(200).result(userResponses).build();
@@ -46,7 +46,7 @@ public class UserController {
         return ApiResponse.<UserResponse>builder().code(200).result(userMapper.toUserResponse(user)).build();
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<UserResponse> createUser(@RequestBody UserCreateRequest userCreateRequest) {
         UserResponse userResponse = userService.saveUser(userCreateRequest);
         return ApiResponse.<UserResponse>builder().code(200).result(userResponse).build();

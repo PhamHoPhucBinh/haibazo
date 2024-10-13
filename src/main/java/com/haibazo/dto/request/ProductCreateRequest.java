@@ -6,8 +6,6 @@ import com.haibazo.enums.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Data
 @Builder
 @Setter
@@ -23,5 +21,6 @@ public class ProductCreateRequest {
     Size size;
     String description;
     String imageUrl;
-    List<Integer> reviews;
+    int category;
+    int style;
 }

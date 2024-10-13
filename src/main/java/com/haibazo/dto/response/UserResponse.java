@@ -15,6 +15,5 @@ import java.util.List;
 public class UserResponse {
     String username;
     String email;
-    String password;
-    List<String> reviews;
+    List<ReviewResponse> reviews;
 }

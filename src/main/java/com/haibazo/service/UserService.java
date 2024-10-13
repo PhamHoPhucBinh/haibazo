@@ -7,7 +7,6 @@ import com.haibazo.exception.AppException;
 import com.haibazo.exception.ErrorCode;
 import com.haibazo.mapper.IUserMapper;
 import com.haibazo.model.User;
-import com.haibazo.repository.ReviewRepository;
 import com.haibazo.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import java.util.List;
 public class UserService {
     IUserMapper iUserMapper;
     UserRepository userRepository;
-    ReviewRepository reviewRepository;
 
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream().map(iUserMapper::toUserResponse).toList();
@@ -44,8 +42,6 @@ public class UserService {
     public UserResponse updateUser(Integer userId, UserUpdateRequest request) {
         User user = this.getUserById(userId);
         iUserMapper.updateUser(user, request);
-        var reviews = reviewRepository.findAllById(request.getReviews());
-        user.setReviews(reviews);
         user = userRepository.save(user);
         return iUserMapper.toUserResponse(user);
     }
@@ -53,8 +49,6 @@ public class UserService {
 
     public UserResponse saveUser(UserCreateRequest userCreateRequest) {
         User user = iUserMapper.toUser(userCreateRequest);
-        var reviews = reviewRepository.findAllById(userCreateRequest.getReviews());
-        user.setReviews(reviews);
         try {
             user = userRepository.save(user);
         } catch (DataIntegrityViolationException e) {

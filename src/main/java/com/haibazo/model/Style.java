@@ -21,7 +21,7 @@ public class Style {
     @Column(name = "style_name")
     private String styleName;
     @OneToMany(mappedBy = "style", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products = new ArrayList<>(); ;
+    private List<Product> products;
 
     public void addProduct(Product product) {
         products.add(product);

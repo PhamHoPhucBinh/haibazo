@@ -1,6 +1,7 @@
 package com.haibazo.dto.response;
 
 import com.haibazo.enums.Color;
+import com.haibazo.enums.Size;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
@@ -22,9 +23,8 @@ public class ProductResponse {
     @Enumerated(EnumType.STRING)
     Color color;
     @Enumerated(EnumType.STRING)
-    Color size;
+    Size size;
     String description;
     String imageUrl;
     List<ReviewResponse> reviews;
-
 }

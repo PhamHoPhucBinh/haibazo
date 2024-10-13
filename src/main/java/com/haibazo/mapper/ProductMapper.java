@@ -12,11 +12,12 @@ import org.mapstruct.MappingTarget;
 public interface ProductMapper {
 
     @Mapping(target = "reviews", ignore = true)
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "style", ignore = true)
     Product toProduct(ProductCreateRequest productCreateRequest);
 
     ProductResponse toProductResponse(Product product);
 
-    @Mapping(target = "reviews", ignore = true)
     void update(@MappingTarget Product product, ProductUpdateRequest productUpdateRequest);
 
 }

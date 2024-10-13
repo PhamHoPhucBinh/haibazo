@@ -11,10 +11,13 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
     @Mapping(target = "products", ignore = true)
+    @Mapping(target = "categoryId", ignore = true)
     Category toCategory(CategoryCreateRequest categoryCreateRequest);
+
 
     CategoryResponse toCategoryCategoryResponse(Category category);
 
     @Mapping(target = "products", ignore = true)
+    @Mapping(target = "categoryId", ignore = true)
     void updateCategory(@MappingTarget Category category, CategoryUpdateRequest categoryUpdateRequest);
 }

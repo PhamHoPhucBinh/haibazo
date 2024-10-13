@@ -11,11 +11,13 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface IUserMapper {
     @Mapping(target = "reviews", ignore = true)
+    @Mapping(target = "userId", ignore = true)
     User toUser(UserCreateRequest userCreateRequest);
 
     UserResponse toUserResponse(User user);
 
     @Mapping(target = "reviews", ignore = true)
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "username", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest userUpdateRequest);
-
 }

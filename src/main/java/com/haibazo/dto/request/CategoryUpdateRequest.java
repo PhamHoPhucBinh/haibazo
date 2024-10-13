@@ -14,5 +14,4 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryUpdateRequest {
     String categoryName;
-    List<String> products;
 }

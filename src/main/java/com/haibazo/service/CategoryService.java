@@ -8,7 +8,6 @@ import com.haibazo.exception.ErrorCode;
 import com.haibazo.mapper.CategoryMapper;
 import com.haibazo.model.Category;
 import com.haibazo.repository.CategoryRepository;
-import com.haibazo.repository.ProductRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,7 +24,6 @@ public class CategoryService {
 
     CategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
-    ProductRepository productRepository;
 
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
@@ -37,8 +35,6 @@ public class CategoryService {
 
     public CategoryResponse saveCategory(CategoryCreateRequest categoryCreateRequest) {
         Category category = categoryMapper.toCategory(categoryCreateRequest);
-        var products = productRepository.findAllByProductNameIn(categoryCreateRequest.getProducts());
-        category.setProducts(products);
         try {
             category = categoryRepository.save(category);
         } catch (DataIntegrityViolationException e) {
@@ -52,8 +48,6 @@ public class CategoryService {
     public CategoryResponse updateCategory(Integer categoryId, CategoryUpdateRequest request) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         categoryMapper.updateCategory(category, request);
-        var products = productRepository.findAllByProductNameIn(request.getProducts());
-        category.setProducts(products);
         category.setCategoryName(request.getCategoryName());
         category = categoryRepository.save(category);
         return categoryMapper.toCategoryCategoryResponse(category);

@@ -3,8 +3,6 @@ package com.haibazo.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Data
 @Builder
 @Setter
@@ -14,5 +12,4 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryCreateRequest {
     String categoryName;
-    List<String> products;
 }

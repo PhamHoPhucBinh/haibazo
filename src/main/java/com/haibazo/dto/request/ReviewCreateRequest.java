@@ -17,4 +17,6 @@ public class ReviewCreateRequest {
     @Enumerated(EnumType.STRING)
     Rating rating;
     String comment;
+    int userId;
+    int productId;
 }

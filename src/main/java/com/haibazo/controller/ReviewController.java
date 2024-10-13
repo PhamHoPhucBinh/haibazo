@@ -1,17 +1,17 @@
 package com.haibazo.controller;
 
-import com.haibazo.model.Product;
-import com.haibazo.model.Review;
-import com.haibazo.model.User;
+import com.haibazo.dto.request.ReviewCreateRequest;
+import com.haibazo.dto.request.ReviewUpdateRequest;
+import com.haibazo.dto.response.ApiResponse;
+import com.haibazo.dto.response.ReviewResponse;
+import com.haibazo.mapper.IReviewMapper;
 import com.haibazo.service.ReviewService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/review")
@@ -20,47 +20,45 @@ import java.util.Optional;
 public class ReviewController {
 
     ReviewService reviewService;
+    IReviewMapper iReviewMapper;
 
     @GetMapping("/list")
-    public List<Review> getAllReviews() {
-        return reviewService.getAllReviews();
+    public ApiResponse<List<ReviewResponse>> getAllReviews() {
+        return ApiResponse.<List<ReviewResponse>>builder().code(200)
+                .result(reviewService.getAllReviews().stream().map(iReviewMapper::toReviewResponse)
+                        .toList())
+                .build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Review> getReviewById(@PathVariable(value = "id") Integer reviewId) {
-        Optional<Review> review = reviewService.getReviewById(reviewId);
-        return review.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ApiResponse<ReviewResponse> getReviewById(@PathVariable(value = "id") Integer reviewId) {
+        ReviewResponse review = reviewService.getReviewById(reviewId);
+        return ApiResponse.<ReviewResponse>builder().code(200).result(review).build();
     }
 
     @GetMapping("/product/{productId}")
-    public List<Review> getReviewsByProduct(@PathVariable(value = "productId") Product productId) {
-        return reviewService.getReviewsByProduct(productId);
+    public ApiResponse<List<ReviewResponse>> getReviewsByProduct(@PathVariable(value = "productId") Integer productId) {
+        return ApiResponse.<List<ReviewResponse>>builder().code(200).result(reviewService.getReviewsByProduct(productId)).build();
     }
 
     @GetMapping("/user/{userId}")
-    public List<Review> getReviewsByUser(@PathVariable(value = "userId") User userId) {
-        return reviewService.getReviewsByUser(userId);
+    public ApiResponse<List<ReviewResponse>> getReviewsByUser(@PathVariable(value = "userId") Integer userId) {
+        return ApiResponse.<List<ReviewResponse>>builder().code(200).result(reviewService.getReviewsByUser(userId)).build();
     }
 
-    @PostMapping
-    public Review createReview(@RequestBody Review review) {
-        return reviewService.saveReview(review);
+    @PostMapping("/create")
+    public ApiResponse<ReviewResponse> createReview(@RequestBody ReviewCreateRequest reviewCreateRequest) {
+        return ApiResponse.<ReviewResponse>builder().code(200).result(reviewService.saveReview(reviewCreateRequest)).build();
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity<Review> updateReview(@PathVariable(value = "id") Integer reviewId, @RequestBody Review reviewDetails) {
-        Optional<Review> review = reviewService.getReviewById(reviewId);
-        if (review.isPresent()) {
-            reviewDetails.setReviewId(reviewId);
-            return ResponseEntity.ok(reviewService.saveReview(reviewDetails));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ApiResponse<ReviewResponse> updateReview(@PathVariable(value = "id") Integer reviewId, @RequestBody ReviewUpdateRequest reviewDetails) {
+        return ApiResponse.<ReviewResponse>builder().code(200).result(reviewService.updateProduct(reviewId, reviewDetails)).build();
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Void> deleteReview(@PathVariable(value = "id") Integer reviewId) {
+    public ApiResponse<String> deleteReview(@PathVariable(value = "id") Integer reviewId) {
         reviewService.deleteReview(reviewId);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.<String>builder().code(200).result("Delete Review Successful").build();
     }
 }
