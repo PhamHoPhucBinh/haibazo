@@ -1,17 +1,19 @@
 package com.haibazo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "category")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +22,9 @@ public class Category {
     @Column(name = "category_name")
     private String categoryName;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products = new ArrayList<>(); ;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Product> products;
+
     // Add helper methods to manage the bidirectional relationship
     public void addProduct(Product product) {
         products.add(product);
@@ -31,14 +34,5 @@ public class Category {
     public void removeProduct(Product product) {
         products.remove(product);
         product.setCategory(null);
-    }
-
-    public Category() {
-    }
-
-    public Category(Integer categoryId, String categoryName, List<Product> products) {
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-        this.products = products;
     }
 }

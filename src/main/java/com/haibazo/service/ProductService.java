@@ -1,36 +1,75 @@
 package com.haibazo.service;
 
-import com.haibazo.model.Product;
+import com.haibazo.dto.request.ProductCreateRequest;
+import com.haibazo.dto.request.ProductUpdateRequest;
+import com.haibazo.dto.response.ProductResponse;
+import com.haibazo.enums.Color;
+import com.haibazo.enums.Size;
+import com.haibazo.exception.AppException;
+import com.haibazo.exception.ErrorCode;
+import com.haibazo.mapper.ProductMapper;
 import com.haibazo.model.Category;
+import com.haibazo.model.Product;
 import com.haibazo.model.Style;
+import com.haibazo.repository.CategoryRepository;
 import com.haibazo.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.haibazo.repository.StyleRepository;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductService {
-    @Autowired
-    private ProductRepository productRepository;
+    ProductRepository productRepository;
+    ProductMapper productMapper;
+    StyleRepository styleRepository;
+    CategoryRepository categoryRepository;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    public Optional<Product> getProductById(Integer productId) {
-        return productRepository.findById(productId);
+    public Product getProductById(Integer productId) {
+        return productRepository.findById(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
-    public Product saveProduct(Product product) {
-        return productRepository.save(product);
+    public ProductResponse updateProduct(Integer productId, ProductUpdateRequest request) {
+        Product product = this.getProductById(productId);
+        productMapper.update(product, request);
+        product = productRepository.save(product);
+        return productMapper.toProductResponse(product);
+    }
+
+    public ProductResponse saveProduct(ProductCreateRequest productCreateRequest) {
+        Product product = productMapper.toProduct(productCreateRequest);
+        Style style = styleRepository.findById(productCreateRequest.getStyle()).orElse(null);
+        Category category = categoryRepository.findById(productCreateRequest.getCategory()).orElse(null);
+        product.setStyle(style);
+        product.setCategory(category);
+        try {
+            product = productRepository.save(product);
+        } catch (DataIntegrityViolationException e) {
+            throw new AppException(
+                    ErrorCode.PRODUCT_EXIST);
+        }
+        return productMapper.toProductResponse(product);
     }
 
     public void deleteProduct(Integer productId) {
-        productRepository.deleteById(productId);
+        try {
+            productRepository.deleteById(productId);
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.PRODUCT_NOT_FOUND);
+        }
     }
-    public List<Product> getProductsByColor(Product.Color color) {
+
+    public List<Product> getProductsByColor(Color color) {
         return productRepository.findByColor(color);
     }
 
@@ -38,7 +77,7 @@ public class ProductService {
         return productRepository.findByCategory(category);
     }
 
-    public List<Product> getProductsBySize(Product.Size size) {
+    public List<Product> getProductsBySize(Size size) {
         return productRepository.findBySize(size);
     }
 

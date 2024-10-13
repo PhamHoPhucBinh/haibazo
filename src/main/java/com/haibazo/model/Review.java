@@ -1,13 +1,17 @@
 package com.haibazo.model;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.haibazo.enums.Rating;
+import jakarta.persistence.*;
+import lombok.*;
+
 @Entity
 @Table(name = "review", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "product_id"})})
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,24 +26,12 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference
     private Product product;
 
-    // Enum for Rating
-    public enum Rating {
-        ONE, TWO, THREE, FOUR, FIVE
-    }
-
-    public Review() {
-    }
-    public Review(int reviewId, Rating rating, String comment, User user, Product product) {
-        this.reviewId = reviewId;
-        this.rating = rating;
-        this.comment = comment;
-        this.user = user;
-        this.product = product;
-    }
 }
